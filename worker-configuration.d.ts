@@ -2,7 +2,6 @@
 // Manually defined for the Productive MCP Worker
 
 interface Env {
-  MCP_OBJECT: DurableObjectNamespace;
   PRODUCTIVE_API_TOKEN: string;
   PRODUCTIVE_ORG_ID: string;
 }
