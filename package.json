@@ -1,0 +1,22 @@
+{
+  "name": "productive-mcp-worker",
+  "version": "1.0.0",
+  "description": "Productive.io MCP server deployed on Cloudflare Workers",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "start": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "cf-typegen": "wrangler types",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "agents": "^0.5.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250214.0",
+    "typescript": "5.9.3",
+    "wrangler": "^4.67.0"
+  }
+}
