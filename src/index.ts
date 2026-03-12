@@ -89,11 +89,16 @@ function createServer(env: Env): McpServer {
   // ── 1. list_tasks ──────────────────────────────────────────────────────────
   server.tool(
     'list_tasks',
-    'List tasks from Productive.io. Filter by project_id to get all tasks in a project or template. Returns task IDs, titles, descriptions, and status.',
+    'List tasks from Productive.io. Supports filtering by assignee, project, task list, status, due date, overdue status, and free-text search. Returns task IDs, titles, descriptions, assignee IDs, and status.',
     {
-      project_id: z.string().optional().describe('Filter tasks by project ID'),
+      project_id: z.string().optional().describe('Filter tasks by project ID (can be comma-separated list of IDs)'),
       task_list_id: z.string().optional().describe('Filter tasks by task list ID'),
+      assignee_id: z.string().optional().describe('Filter tasks by assignee person ID. Use this to find tasks assigned to a specific person.'),
       status: z.enum(['open', 'closed']).optional().describe('Filter by open or closed status'),
+      overdue: z.boolean().optional().describe('Set to true to return only overdue tasks'),
+      due_date_before: z.string().optional().describe('Return tasks due before this date (YYYY-MM-DD)'),
+      due_date_after: z.string().optional().describe('Return tasks due after this date (YYYY-MM-DD)'),
+      query: z.string().optional().describe('Free-text search across task titles and descriptions'),
       limit: z.number().min(1).max(200).default(50).optional().describe('Number of tasks to return (max 200, default 50)'),
       page: z.number().min(1).default(1).optional().describe('Page number for pagination'),
     },
@@ -101,8 +106,13 @@ function createServer(env: Env): McpServer {
       const query = new URLSearchParams();
       if (params.project_id) query.set('filter[project_id]', params.project_id);
       if (params.task_list_id) query.set('filter[task_list_id]', params.task_list_id);
+      if (params.assignee_id) query.set('filter[assignee_id]', params.assignee_id);
       if (params.status === 'open') query.set('filter[status]', '1');
       if (params.status === 'closed') query.set('filter[status]', '2');
+      if (params.overdue) query.set('filter[overdue_status]', '2');
+      if (params.due_date_before) query.set('filter[due_date_before]', params.due_date_before);
+      if (params.due_date_after) query.set('filter[due_date_after]', params.due_date_after);
+      if (params.query) query.set('filter[query]', params.query);
       query.set('page[size]', String(params.limit ?? 50));
       query.set('page[number]', String(params.page ?? 1));
 
